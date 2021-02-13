@@ -9,6 +9,7 @@ import io.appium.java_client.android.nativekey.KeyEvent;
 import io.appium.java_client.pagefactory.AppiumFieldDecorator;
 import io.appium.java_client.touch.WaitOptions;
 import io.appium.java_client.touch.offset.PointOption;
+import org.omg.CORBA.TIMEOUT;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.pagefactory.AjaxElementLocatorFactory;
@@ -16,6 +17,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
+import java.util.concurrent.TimeUnit;
 
 public class BasePage {
 
@@ -41,6 +43,136 @@ public class BasePage {
         System.out.println("Trying to tap back on device...");
         driver.pressKey(new KeyEvent(AndroidKey.BACK));
         System.out.println("Back button tapped.");
+    }
+
+    /**
+     * Tap Home method
+     */
+    public void tapHome(){
+        System.out.println("Trying to tap home on device...");
+        driver.pressKey(new KeyEvent(AndroidKey.HOME));
+        System.out.println("Home button tapped.");
+    }
+
+    /**
+     * Tap Settings method
+     */
+    public void tapSetings(){
+        System.out.println("Trying to tap Settings on device...");
+        driver.pressKey(new KeyEvent(AndroidKey.SETTINGS));
+        System.out.println("Settings button tapped.");
+    }
+
+    /**
+     * Swipe to element method
+     * @param locator - locatorID
+     */
+    public void swipeToElementById(String locator){
+        System.out.println("Trying to find the element...");
+
+        driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
+
+        int contador = 0;
+
+        while (driver.findElements(By.id(locator)).size() == 0 && contador < 10){
+            System.out.println("Element wasn't found, swiping down...");
+
+            // Animation default time:
+            //  - Android: 300 ms
+            //  - iOS: 200 ms
+            // final value depends on your app and could be greater
+            final int ANIMATION_TIME = 200; // ms
+            final int PRESS_TIME = 200; // ms
+            int edgeBorder = 10; // better avoid edges
+            PointOption pointOptionStart, pointOptionEnd;
+
+            // init screen variables
+            Dimension dims = driver.manage().window().getSize();
+
+            // init start point = center of screen
+            pointOptionStart = PointOption.point(dims.width / 2, dims.height / 2);
+            pointOptionEnd = PointOption.point(dims.width / 2, edgeBorder);
+            System.out.println("Position to swipe created.");
+
+            // execute swipe using TouchAction
+            try {
+                new TouchAction(driver)
+                        .press(pointOptionStart)
+                        // a bit more reliable when we add small wait
+                        .waitAction(WaitOptions.waitOptions(Duration.ofMillis(PRESS_TIME)))
+                        .moveTo(pointOptionEnd)
+                        .release().perform();
+                System.out.println("Swipe performed.");
+            } catch (Exception e) {
+                System.err.println("swipeScreen(): TouchAction FAILED\n" + e.getMessage());
+                return;
+            }
+
+            // always allow swipe action to complete
+            try {
+                Thread.sleep(ANIMATION_TIME);
+            } catch (InterruptedException e) {
+                // ignore
+            }
+            contador++;
+        }
+        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+    }
+
+    /**
+     * Swipe to element method
+     * @param locator - locatorID
+     */
+    public void swipeToElementByXpath(String locator) throws InterruptedException {
+        System.out.println("Trying to find the element...");
+
+        driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
+
+        int contador = 0;
+
+        while (driver.findElements(By.xpath(locator)).size() == 0 && contador < 10){
+            System.out.println("Element wasn't found, swiping down...");
+
+            // Animation default time:
+            //  - Android: 300 ms
+            //  - iOS: 200 ms
+            // final value depends on your app and could be greater
+            final int ANIMATION_TIME = 200; // ms
+            final int PRESS_TIME = 200; // ms
+            int edgeBorder = 10; // better avoid edges
+            PointOption pointOptionStart, pointOptionEnd;
+
+            // init screen variables
+            Dimension dims = driver.manage().window().getSize();
+
+            // init start point = center of screen
+            pointOptionStart = PointOption.point(dims.width / 2, dims.height / 2);
+            pointOptionEnd = PointOption.point(dims.width / 2, edgeBorder);
+            System.out.println("Position to swipe created.");
+
+            // execute swipe using TouchAction
+            try {
+                new TouchAction(driver)
+                        .press(pointOptionStart)
+                        // a bit more reliable when we add small wait
+                        .waitAction(WaitOptions.waitOptions(Duration.ofMillis(PRESS_TIME)))
+                        .moveTo(pointOptionEnd)
+                        .release().perform();
+                System.out.println("Swipe performed.");
+            } catch (Exception e) {
+                System.err.println("swipeScreen(): TouchAction FAILED\n" + e.getMessage());
+                return;
+            }
+
+            // always allow swipe action to complete
+            try {
+                Thread.sleep(ANIMATION_TIME);
+            } catch (InterruptedException e) {
+                // ignore
+            }
+            contador++;
+        }
+        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
     }
 
     /**

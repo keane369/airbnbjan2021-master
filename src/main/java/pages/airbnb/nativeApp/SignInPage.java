@@ -1,24 +1,28 @@
-package pages.airbnb;
+package pages.airbnb.nativeApp;
 
 import core.BasePage;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.AndroidElement;
 import io.appium.java_client.pagefactory.AndroidFindBy;
 
-public class LoginPage extends BasePage {
+public class SignInPage extends BasePage {
 
-    public LoginPage(AndroidDriver driver) {
+    public SignInPage(AndroidDriver driver) {
         super(driver);
     }
 
     //Locators
     //Continue with google button
-    @AndroidFindBy(id = "2131429078")
+    @AndroidFindBy(uiAutomator = "new UiSelector().className(\"android.widget.Button\").text(\"Continue with Google\")")
     private AndroidElement continueBtn;
 
     //Avatar name text
     @AndroidFindBy(id = "com.google.android.gms:id/account_display_name")
     private AndroidElement avatarNameTx;
+
+    //Image element
+    @AndroidFindBy(uiAutomator = "new UiSelector().className(\"android.widget.ImageView\")")
+    private AndroidElement imageIcon;
 
     //Methods
 
@@ -38,5 +42,14 @@ public class LoginPage extends BasePage {
         System.out.println("Trying to click the avatar name text...");
         avatarNameTx.click();
         System.out.println("Avatar name text clicked.");
+    }
+
+    /**
+     * Check if user avatar present method
+     * @return true if value is present
+     */
+    public boolean isAvatarPresent(){
+        System.out.println("Trying to check if Avatar image is present...");
+        return imageIcon.isDisplayed();
     }
 }
